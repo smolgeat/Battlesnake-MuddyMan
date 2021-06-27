@@ -56,6 +56,53 @@ type MoveResponse struct {
 	Shout string `json:"shout,omitempty"`
 }
 
+func AddCoord (a Coord,b Coord)Coord {
+     newX := a.X + b.X
+     newY := a.Y + b.Y
+     var newCoord Coord
+     newCoord.X = newX
+     newCoord.Y = newY
+    return newCoord
+}
+
+func GenWalls(request GameRequest) [2]int{
+
+  var boardMax int = request.Board.Height 
+  var boardMin int = 0
+  var walls [2]int = [2]int{boardMin,boardMax}
+  return walls
+}
+
+func GetMoveResult(move string, head Coord) Coord{
+  var moveResult Coord
+  var possibleResult [4]Coord = [4]Coord{{0,1},{0,-1},{-1,0},{1,0}}
+
+  switch move {
+    case "up":
+        moveResult = AddCoord(head,possibleResult[0])
+    case "down":
+        moveResult = AddCoord(head,possibleResult[1])
+    case "left":
+        moveResult = AddCoord(head,possibleResult[2])
+    case "right":
+        moveResult = AddCoord(head,possibleResult[3])    
+    }
+
+  return moveResult
+}
+
+func CheckMove(moveResult Coord, walls [2]int)bool{
+  //if walls in result false else true
+  var result bool
+  result = true
+  for i:=0;i<1;i++{
+    if (moveResult.X == walls[i] || moveResult.Y ==walls[i]){
+      result = false
+    }
+  }
+  return result
+}
+
 //To do get head location and avoid walls and self
 
 
@@ -101,13 +148,21 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+  var finalMove string
 	// Choose a random direction to move in
 	possibleMoves := []string{"up", "down", "left", "right"}
+  for {
 	move := possibleMoves[rand.Intn(len(possibleMoves))]
-
+  walls := GenWalls(request)
+  moveResult := GetMoveResult(move, request.You.Head)
+  result :=CheckMove(moveResult, walls)
+  if (result == true){
+    finalMove = move
+    break
+  }
+  }
 	response := MoveResponse{
-		Move: move,
+		Move: finalMove,
 	}
 
 	fmt.Printf("MOVE: %s\n", response.Move)
