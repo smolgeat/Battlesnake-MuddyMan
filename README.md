@@ -1,1 +1,3 @@
-# Battlesnake-Summer-League-2021
+# Battlesnake
+
+Placed Bronze in Summer 2021 League
