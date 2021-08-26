@@ -56,8 +56,59 @@ type MoveResponse struct {
 	Shout string `json:"shout,omitempty"`
 }
 
-//To do get head location and avoid walls and self
+func AvoidSuicide(request GameRequest) (move string) {
+	// take snake position
+	// take walls position
+	//  if move  causes head to hit it then new move
 
+	MyHead := request.You.Head
+	MyBody := request.You.Body
+
+	// Choose a random direction to move in
+	//map of moves and how they change head position
+	moveResults := map[string][]int{
+		"up":    {0, 1},
+		"down":  {0, -1},
+		"left":  {-1, 0},
+		"right": {1, 0},
+	}
+	possibleMoves := []string{"up", "down", "left", "right"}
+	safe := 0
+	for safe != 1 {
+		move := possibleMoves[rand.Intn(len(possibleMoves))]
+		// compute new head position
+		switch move {
+		case "up":
+			fmt.Println(moveResults[move])
+			newHeadX := MyHead.X + moveResults[move][0]
+			newHeadY := MyHead.Y + moveResults[move][1]
+			newHead := Coord{newHeadX, newHeadY}
+
+		case "down":
+			fmt.Println(moveResults[move])
+			newHeadX := MyHead.X + moveResults[move][0]
+			newHeadY := MyHead.Y + moveResults[move][1]
+			newHead := Coord{newHeadX, newHeadY}
+		case "left":
+			fmt.Println(moveResults[move])
+			newHeadX := MyHead.X + moveResults[move][0]
+			newHeadY := MyHead.Y + moveResults[move][1]
+			newHead := Coord{newHeadX, newHeadY}
+		case "right":
+			fmt.Println(moveResults[move])
+			newHeadX := MyHead.X + moveResults[move][0]
+			newHeadY := MyHead.Y + moveResults[move][1]
+			newHead := Coord{newHeadX, newHeadY}
+
+		}
+		// if newHEad not in unsafe then safe=1
+	}
+
+	return move
+
+}
+
+//To do get head location and avoid walls and self
 
 // HandleIndex is called when your Battlesnake is created and refreshed
 // by play.battlesnake.com. BattlesnakeInfoResponse contains information about
@@ -102,9 +153,7 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	// Choose a random direction to move in
-	possibleMoves := []string{"up", "down", "left", "right"}
-	move := possibleMoves[rand.Intn(len(possibleMoves))]
+	move := AvoidSuicide(request)
 
 	response := MoveResponse{
 		Move: move,
