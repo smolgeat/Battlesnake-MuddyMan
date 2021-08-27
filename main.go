@@ -62,8 +62,8 @@ func AvoidSuicide(request GameRequest) (move string) {
 	//  if move  causes head to hit it then new move
 
 	myHead := request.You.Head
-	myBody := request.You.Body
-	boundary := []int{0, request.Board.Height}
+  myBody := request.You.Body
+	boundary := []int{-1, request.Board.Height}
 	var newHead Coord
 	newHeadP := &newHead
 	// Choose a random direction to move in
@@ -84,23 +84,19 @@ func AvoidSuicide(request GameRequest) (move string) {
 		// compute new head position
 		switch *moveP {
 		case "up":
-			fmt.Println(moveResults[move])
 			newHeadX := myHead.X + moveResults[move][0]
 			newHeadY := myHead.Y + moveResults[move][1]
 			*newHeadP = Coord{newHeadX, newHeadY}
 
 		case "down":
-			fmt.Println(moveResults[move])
 			newHeadX := myHead.X + moveResults[move][0]
 			newHeadY := myHead.Y + moveResults[move][1]
 			*newHeadP = Coord{newHeadX, newHeadY}
 		case "left":
-			fmt.Println(moveResults[move])
 			newHeadX := myHead.X + moveResults[move][0]
 			newHeadY := myHead.Y + moveResults[move][1]
 			*newHeadP = Coord{newHeadX, newHeadY}
 		case "right":
-			fmt.Println(moveResults[move])
 			newHeadX := myHead.X + moveResults[move][0]
 			newHeadY := myHead.Y + moveResults[move][1]
 			*newHeadP = Coord{newHeadX, newHeadY}
@@ -108,10 +104,16 @@ func AvoidSuicide(request GameRequest) (move string) {
 		}
 		// if newHead in myBody or boundray in newHead
 		if (newHead.X == boundary[0]) || (newHead.X == boundary[1]) || (newHead.Y == boundary[0]) || (newHead.Y == boundary[1]) {
-
+        fmt.Println(move,"IS WRONG, NEW MOVE")
 		} else {
 			safe = 1
 		}
+    for _, myBodySegment:= range myBody[1:]{
+      if newHead == myBodySegment {
+        safe = 0;
+      }
+
+    }
 	}
 
 	return move
@@ -128,7 +130,7 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		APIVersion: "1",
 		Author:     "smolgeat",
 		Color:      "#4d0019",
-		Head:       "#316000",
+		Head:       "viper",
 		Tail:       "coffee",
 	}
 
