@@ -61,9 +61,11 @@ func AvoidSuicide(request GameRequest) (move string) {
 	// take walls position
 	//  if move  causes head to hit it then new move
 
-	MyHead := request.You.Head
-	MyBody := request.You.Body
-
+	myHead := request.You.Head
+	myBody := request.You.Body
+	boundary := []int{0, request.Board.Height}
+	var newHead Coord
+	newHeadP := &newHead
 	// Choose a random direction to move in
 	//map of moves and how they change head position
 	moveResults := map[string][]int{
@@ -73,35 +75,43 @@ func AvoidSuicide(request GameRequest) (move string) {
 		"right": {1, 0},
 	}
 	possibleMoves := []string{"up", "down", "left", "right"}
+
+	moveP := &move
 	safe := 0
 	for safe != 1 {
-		move := possibleMoves[rand.Intn(len(possibleMoves))]
+
+		*moveP = possibleMoves[rand.Intn(len(possibleMoves))]
 		// compute new head position
-		switch move {
+		switch *moveP {
 		case "up":
 			fmt.Println(moveResults[move])
-			newHeadX := MyHead.X + moveResults[move][0]
-			newHeadY := MyHead.Y + moveResults[move][1]
-			newHead := Coord{newHeadX, newHeadY}
+			newHeadX := myHead.X + moveResults[move][0]
+			newHeadY := myHead.Y + moveResults[move][1]
+			*newHeadP = Coord{newHeadX, newHeadY}
 
 		case "down":
 			fmt.Println(moveResults[move])
-			newHeadX := MyHead.X + moveResults[move][0]
-			newHeadY := MyHead.Y + moveResults[move][1]
-			newHead := Coord{newHeadX, newHeadY}
+			newHeadX := myHead.X + moveResults[move][0]
+			newHeadY := myHead.Y + moveResults[move][1]
+			*newHeadP = Coord{newHeadX, newHeadY}
 		case "left":
 			fmt.Println(moveResults[move])
-			newHeadX := MyHead.X + moveResults[move][0]
-			newHeadY := MyHead.Y + moveResults[move][1]
-			newHead := Coord{newHeadX, newHeadY}
+			newHeadX := myHead.X + moveResults[move][0]
+			newHeadY := myHead.Y + moveResults[move][1]
+			*newHeadP = Coord{newHeadX, newHeadY}
 		case "right":
 			fmt.Println(moveResults[move])
-			newHeadX := MyHead.X + moveResults[move][0]
-			newHeadY := MyHead.Y + moveResults[move][1]
-			newHead := Coord{newHeadX, newHeadY}
+			newHeadX := myHead.X + moveResults[move][0]
+			newHeadY := myHead.Y + moveResults[move][1]
+			*newHeadP = Coord{newHeadX, newHeadY}
 
 		}
-		// if newHEad not in unsafe then safe=1
+		// if newHead in myBody or boundray in newHead
+		if (newHead.X == boundary[0]) || (newHead.X == boundary[1]) || (newHead.Y == boundary[0]) || (newHead.Y == boundary[1]) {
+
+		} else {
+			safe = 1
+		}
 	}
 
 	return move
