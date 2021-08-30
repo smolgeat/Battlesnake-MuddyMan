@@ -63,6 +63,20 @@ func AvoidSuicide(request GameRequest) (move string) {
 
 	myHead := request.You.Head
   myBody := request.You.Body
+  opponents := request.Board.Snakes
+  occupied := map[Coord]string{
+
+  }
+  //place opponent snake coordinates in a map
+  for _, snake:= range opponents{
+    for _,snakeBodySegment:= range snake.Body{
+    
+    occupied[snakeBodySegment] = "Opponent"
+    }
+  }
+  for _, myBodySegment:= range myBody[1:]{
+      occupied[myBodySegment] = "Me"
+      }
 	boundary := []int{-1, request.Board.Height}
 	var newHead Coord
 	newHeadP := &newHead
@@ -107,13 +121,11 @@ func AvoidSuicide(request GameRequest) (move string) {
         fmt.Println(move,"IS WRONG, NEW MOVE")
 		} else {
 			safe = 1
-		}
-    for _, myBodySegment:= range myBody[1:]{
-      if newHead == myBodySegment {
-        safe = 0;
-      }
-
-    }
+		}// assigns result of occupied[newHead] to coordinate if no result then coordinate will be a zero value, exists is a boolean true if newHead position is occupied
+    if coordinate, exists:=occupied[newHead];exists {
+     fmt.Println(move,coordinate,"IS WRONG, NEW MOVE") 
+    safe = 0
+}
 	}
 
 	return move
@@ -165,8 +177,10 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	move := AvoidSuicide(request)
+  //timeout := request.Game.Timeout
 
+	move := AvoidSuicide(request)
+  fmt.Println(request.Turn)
 	response := MoveResponse{
 		Move: move,
 	}
